@@ -1,0 +1,35 @@
+{
+  "name": "wp-voxusini",
+  "version": "1.1.0",
+  "description": "wordpress plugin for management of voxusini monthly pdf issue",
+  "scripts": {
+    "postinstall": "npm run composer -- create-project wp-coding-standards/wpcs:dev-master --no-dev --keep-vcs",
+    "test": "npm run lint:php && npm run lint:js",
+    "lint:php": "gulp phpcs",
+    "lint:js": "gulp eslint",
+    "composer": "php ./node_modules/getcomposer/composer.phar"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medfreeman/wp-voxusini.git"
+  },
+  "keywords": [
+    "wordpress",
+    "vox"
+  ],
+  "author": "Mehdi Lahlou",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/medfreeman/wp-voxusini/issues"
+  },
+  "homepage": "https://github.com/medfreeman/wp-voxusini#readme",
+  "devDependencies": {
+    "eslint": "^3.2.2",
+    "eslint-plugin-wordpress": "git+https://github.com/ntwb/eslint-plugin-wordpress.git",
+    "getcomposer": "^1.3.2",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-phpcs": "^1.1.1",
+    "pre-commit": "^1.1.3"
+  }
+}
