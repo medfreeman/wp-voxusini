@@ -1,6 +1,6 @@
 {
   "name": "wp-voxusini",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "wordpress plugin for management of voxusini monthly pdf issue",
   "scripts": {
     "postinstall": "npm run composer -- create-project wp-coding-standards/wpcs:dev-master --no-dev --keep-vcs",

@@ -3,7 +3,7 @@
 Plugin Name: Vox Usini
 Plugin URI: https://github.com/medfreeman/wp-voxusini
 Description: Provides an interface for maintaining voxusini monthly pdf issue
-Version: 1.1
+Version: 1.1.1
 Author: Mehdi Lahlou
 Author URI: https://github.com/medfreeman
 Author Email: mehdi.lahlou@free.fr
@@ -951,6 +951,19 @@ if ( ! function_exists( 'vox_pagination' ) ) {
 			echo '<li class="pagination__item last"><a class="pagination__link" href="' . esc_url( Vox::get_yearnum_link( $last_year ) ) . '" title="Last">' . esc_html( '&raquo;' ) . '</a></li>';
 		}
 		echo '</ul>' . esc_html( $after ) . '';
+	}
+}
+
+if ( ! function_exists( 'vox_is_paged' ) ) {
+
+	function vox_is_paged() {
+		global $wp_query;
+
+		$first_year = Vox::get_year_post_highest();
+		if ( isset( $wp_query->query_vars['vox_year'] ) && $first_year !== $wp_query->query_vars['vox_year'] ) {
+			return true;
+		}
+		return false;
 	}
 }
 
