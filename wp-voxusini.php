@@ -502,7 +502,7 @@ class Vox {
 	 * alter vox archive by year
 	 */
 	public function alter_vox_archive_query( $query ) {
-		if ( ! is_admin() && $query->is_main_query() && $query->is_archive() && 'vox' === $query->query_vars['post_type'] ) {
+		if ( ! is_admin() && $query->is_main_query() && $query->is_archive() && isset( $query->query_vars['post_type'] ) && 'vox' === $query->query_vars['post_type'] ) {
 
 			$first_year = self::get_year_post_highest();
 			if ( ! $first_year ) {
