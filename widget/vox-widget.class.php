@@ -1,16 +1,44 @@
 <?php
 /**
- * Vox Widget Class
+
+Vox widget
+
+@package wp-voxusini
+
+	Copyright 2014-2016 Mehdi Lahlou (mehdi.lahlou@free.fr)
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License, version 2, as
+	published by the Free Software Foundation.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation,
  */
 
+/**
+ * Vox Widget Class
+ */
 class Vox_widget extends WP_Widget {
 
-	/** constructor */
+	/** Constructor */
 	function __construct() {
 		parent::__construct( false, 'Vox Widget' );
 	}
 
-	/** @see WP_Widget::widget */
+	/**
+	 * Prints vox widget
+	 *
+	 * @see WP_Widget::widget
+	 *
+	 * @param array  $args     Widget arguments.
+	 * @param object $instance Widget instance.
+	 */
 	function widget( $args, $instance ) {
 		global $wpdb;
 
@@ -83,14 +111,27 @@ class Vox_widget extends WP_Widget {
 		echo wp_kses( $after_widget, array( 'div' => array() ) );
 	}
 
-	/** @see WP_Widget::update */
+	/**
+	 * Updates a particular instance of a widget.
+	 *
+	 * @see WP_Widget::update
+	 *
+	 * @param object $new_instance New widget instance.
+	 * @param object $old_instance Old widget instance.
+	 */
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		return $instance;
 	}
 
-	/** @see WP_Widget::form */
+	/**
+	 * Prints widget form
+	 *
+	 * @see WP_Widget::form
+	 *
+	 * @param object $instance Widget instance.
+	 */
 	function form( $instance ) {
 
 		$title = esc_attr( $instance['title'] );

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 Plugin Name: Vox Usini
 Plugin URI: https://github.com/medfreeman/wp-voxusini
 Description: Provides an interface for maintaining voxusini monthly pdf issue
@@ -9,25 +9,30 @@ Author URI: https://github.com/medfreeman
 Author Email: mehdi.lahlou@free.fr
 License: GPLv3
 
-  Copyright 2014-2016 Mehdi Lahlou (mehdi.lahlou@free.fr)
+@package wp-voxusini
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License, version 2, as
-  published by the Free Software Foundation.
+	Copyright 2014-2016 Mehdi Lahlou (mehdi.lahlou@free.fr)
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License, version 2, as
+	published by the Free Software Foundation.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-*/
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
+/* Automatic plugin requirements */
 require_once 'tgmpa/class-tgm-plugin-activation.php';
 
+/**
+ * Main class.
+ */
 class Vox {
 
 	const POST_TYPE = 'vox';
@@ -52,9 +57,11 @@ class Vox {
 	const YEAR_HIGHEST_CACHE_KEY = 'vox_year_highest';
 	const USINE_TGMPA_ID = 'usine.ch';
 
-	/*--------------------------------------------*
+	/*
+	 *--------------------------------------------
 	 * Constructor
-	 *--------------------------------------------*/
+	 *--------------------------------------------
+	 */
 
 	/**
 	 * Initializes the plugin by setting localization, filters, and administration functions.
@@ -65,36 +72,36 @@ class Vox {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 
-		// Load plugin text domain
+		// Load plugin text domain.
 		add_action( 'init', array( $this, 'plugin_textdomain' ) );
 
-		// TGM Plugin activation library - plugin dependencies
+		// TGM Plugin activation library - plugin dependencies.
 		add_action( 'tgmpa_register', array( $this, 'register_required_plugins' ) );
 
-		// Register post type
+		// Register post type.
 		add_action( 'init', array( $this, 'register_post_type_vox' ) );
-		// meta boxes plugin
+		// Meta boxes plugin.
 		add_filter( 'rwmb_meta_boxes', array( $this, 'register_meta_boxes' ) );
-		// Add pdf thumbnail format
+		// Add pdf thumbnail format.
 		add_action( 'init', array( $this, 'thumbnail_sizes' ) );
 
-		// Register admin styles and scripts
+		// Register admin styles and scripts.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_register_scripts' ) );
 
-		// Add featured image and pdf column to admin vox list
+		// Add featured image and pdf column to admin vox list.
 		add_filter( 'manage_posts_columns', array( $this, 'admin_add_featured_image_column' ) );
 		add_filter( 'manage_posts_custom_column', array( $this, 'admin_manage_featured_image_column' ), 10, 2 );
 		add_filter( 'manage_posts_columns', array( $this, 'admin_add_pdf_column' ) );
 		add_filter( 'manage_posts_custom_column', array( $this, 'admin_manage_pdf_column' ), 10, 2 );
 
-		// Remove months filter dropdown from admin vox list
+		// Remove months filter dropdown from admin vox list.
 		add_filter( 'disable_months_dropdown', '__return_true', self::POST_TYPE );
-		// Add year filter to admin vox list
+		// Add year filter to admin vox list.
 		add_action( 'restrict_manage_posts', array( $this, 'admin_filter_list_by_year' ), self::POST_TYPE );
 		add_filter( 'parse_query', array( $this, 'admin_filter_year_add_meta_query' ) );
 
-		// Register admin ajax request
-		add_action( 'wp_ajax_' . self::AJAX_ACTION , array( $this, 'ajax_get_months_select_options' ) ); // for logged in user
+		// Register admin ajax request.
+		add_action( 'wp_ajax_' . self::AJAX_ACTION , array( $this, 'ajax_get_months_select_options' ) ); // for logged in user.
 
 		add_filter( 'query_vars', array( $this, 'query_vars' ) );
 		add_filter( 'template_redirect', array( $this, 'return_file_http' ) );
@@ -106,7 +113,7 @@ class Vox {
 	/**
 	 * Fired when the plugin is activated.
 	 *
-	 * @param	boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog
+	 * @param	boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public function activate( $network_wide ) {
 		$this->register_post_type_vox();
@@ -116,7 +123,7 @@ class Vox {
 	/**
 	 * Fired when the plugin is deactivated.
 	 *
-	 * @param	boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog
+	 * @param	boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public function deactivate( $network_wide ) {
 		flush_rewrite_rules();
@@ -132,22 +139,22 @@ class Vox {
 	} // end plugin_textdomain
 
 	/**
-	* Register the required plugins for this theme.
-	*
-	* In this example, we register five plugins:
-	* - one included with the TGMPA library
-	* - two from an external source, one from an arbitrary source, one from a GitHub repository
-	* - two from the .org repo, where one demonstrates the use of the `is_callable` argument
-	*
-	* The variables passed to the `tgmpa()` function should be:
-	* - an array of plugin arrays;
-	* - optionally a configuration array.
-	* If you are not changing anything in the configuration array, you can remove the array and remove the
-	* variable from the function call: `tgmpa( $plugins );`.
-	* In that case, the TGMPA default settings will be used.
-	*
-	* This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
-	*/
+	 * Register the required plugins for this theme.
+	 *
+	 * In this example, we register five plugins:
+	 * - one included with the TGMPA library
+	 * - two from an external source, one from an arbitrary source, one from a GitHub repository
+	 * - two from the .org repo, where one demonstrates the use of the `is_callable` argument
+	 *
+	 * The variables passed to the `tgmpa()` function should be:
+	 * - an array of plugin arrays;
+	 * - optionally a configuration array.
+	 * If you are not changing anything in the configuration array, you can remove the array and remove the
+	 * variable from the function call: `tgmpa( $plugins );`.
+	 * In that case, the TGMPA default settings will be used.
+	 *
+	 * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
+	 */
 	public function register_required_plugins() {
 		/*
 		 * Array of plugin arrays. Required keys are name and slug.
@@ -161,7 +168,8 @@ class Vox {
 				'required'  => true,
 			),
 		);
-			/*
+
+		/*
 		 * Array of configuration settings. Amend each line as needed.
 		 *
 		 * TGMPA will start providing localized text strings soon. If you already have translations of our standard
@@ -185,6 +193,9 @@ class Vox {
 		tgmpa( $plugins, $config );
 	}
 
+	/**
+	 * Registers vox post type
+	 */
 	public function register_post_type_vox() {
 		define( 'EP_VOX', 8388608 );
 
@@ -206,7 +217,7 @@ class Vox {
 				'archives' => __( 'les voxs', self::LANG_PREFIX ),
 			),
 		));
-		// Then you can endpoint rewrite rules to this endpoint mask
+		// Then you can endpoint rewrite rules to this endpoint mask.
 		global $wp_rewrite;
 
 		add_rewrite_endpoint( 'cover', EP_VOX );
@@ -215,6 +226,8 @@ class Vox {
 
 	/**
 	 * Registers meta-box plugin
+	 *
+	 * @param array $meta_boxes Registered meta boxes.
 	 */
 	public function register_meta_boxes( $meta_boxes ) {
 
@@ -226,7 +239,7 @@ class Vox {
 					'name'        => '',
 					'id'          => self::MONTH_FIELD,
 					'type'        => 'select',
-					// Array of 'value' => 'Label' pairs for select box
+					// Array of 'value' => 'Label' pairs for select box.
 					'options'     => self::get_months_array(),
 					// Select multiple values, optional. Default is false.
 					'multiple'    => false,
@@ -237,7 +250,7 @@ class Vox {
 					'name'        => '',
 					'id'          => self::YEAR_FIELD,
 					'type'        => 'select',
-					// Array of 'value' => 'Label' pairs for select box
+					// Array of 'value' => 'Label' pairs for select box.
 					'options'     => self::get_years_array(),
 					// Select multiple values, optional. Default is false.
 					'multiple'    => false,
@@ -256,7 +269,7 @@ class Vox {
 					'id'               => self::PDF_FIELD,
 					'type'             => 'file_advanced',
 					'max_file_uploads' => 1,
-					'mime_type'        => 'application/pdf', // Leave blank for all file types
+					'mime_type'        => 'application/pdf', // Leave blank for all file types.
 				),
 			),
 		);
@@ -299,6 +312,8 @@ class Vox {
 
 	/**
 	 * Adds a featured image column to vox admin list
+	 *
+	 * @param array $columns Admin vox columns array.
 	 */
 	public function admin_add_featured_image_column( $columns ) {
 		$columns[ self::ADMIN_COLUMN_FEATURED ] = __( 'Image à la une', self::LANG_PREFIX );
@@ -307,6 +322,9 @@ class Vox {
 
 	/**
 	 * Renders the featured image column in vox admin list
+	 *
+	 * @param string $column_name Vox admin column name.
+	 * @param int    $post_id     Current line post id.
 	 */
 	public function admin_manage_featured_image_column( $column_name, $post_id ) {
 		if ( self::ADMIN_COLUMN_FEATURED === $column_name ) {
@@ -316,6 +334,8 @@ class Vox {
 
 	/**
 	 * Adds a pdf column to vox admin list
+	 *
+	 * @param array $columns Admin vox columns array.
 	 */
 	public function admin_add_pdf_column( $columns ) {
 		$columns[ self::ADMIN_COLUMN_PDF ] = __( 'Fichier pdf joint', self::LANG_PREFIX );
@@ -324,6 +344,9 @@ class Vox {
 
 	/**
 	 * Renders the pdf column in vox admin list
+	 *
+	 * @param string $column_name Vox admin column name.
+	 * @param int    $post_id     Current line post id.
 	 */
 	public function admin_manage_pdf_column( $column_name, $post_id ) {
 		if ( self::ADMIN_COLUMN_PDF === $column_name ) {
@@ -355,7 +378,7 @@ class Vox {
 		echo '<select name="' . esc_attr( self::ADMIN_YEAR_FILTER ) . '">';
 
 		$years_array = self::get_years_post_array();
-		$selected_year = isset( $_GET[ self::ADMIN_YEAR_FILTER ] ) ? absint( $_GET[ self::ADMIN_YEAR_FILTER ] ) : 0; // input var ok.
+		$selected_year = isset( $_GET[ self::ADMIN_YEAR_FILTER ] ) ? absint( $_GET[ self::ADMIN_YEAR_FILTER ] ) : 0; // Input var ok.
 
 		$selected = '';
 		if ( 0 === $selected_year ) {
@@ -376,6 +399,8 @@ class Vox {
 	/**
 	 * Parse filter by year in admin vox list request
 	 * Add query var
+	 *
+	 * @param object $query Wordpress query object.
 	 */
 	public function admin_filter_year_add_meta_query( $query ) {
 		if ( ! is_admin() ) {
@@ -413,7 +438,7 @@ class Vox {
 			)
 		);
 
-		$current_year = isset( $_GET[ self::ADMIN_YEAR_FILTER ] ) ? absint( $_GET[ self::ADMIN_YEAR_FILTER ] ) : 0; // input var ok.
+		$current_year = isset( $_GET[ self::ADMIN_YEAR_FILTER ] ) ? absint( $_GET[ self::ADMIN_YEAR_FILTER ] ) : 0; // Input var ok.
 
 		if ( 0 === $current_year ) {
 			return;
@@ -431,7 +456,7 @@ class Vox {
 	} // end admin_filter_year_add_meta_query
 
 	/**
-	 * ajax get months select options
+	 * Ajax get months select options
 	 */
 	public function ajax_get_months_select_options() {
 		check_ajax_referer( self::AJAX_NONCE, self::AJAX_NONCE_FIELD );
@@ -446,7 +471,9 @@ class Vox {
 	} // end ajax_get_months_select_options
 
 	/**
-	 * register cover query var
+	 * Register cover query var
+	 *
+	 * @param array $qv Wordpress query vars.
 	 */
 	public function query_vars( $qv ) {
 		$qv[] = 'cover';
@@ -455,7 +482,7 @@ class Vox {
 	} // end query_vars
 
 	/**
-	 * return pdf file
+	 * Return pdf file
 	 */
 	public function return_file_http() {
 		global $wp_query;
@@ -499,7 +526,9 @@ class Vox {
 	} // end return_file_http
 
 	/**
-	 * alter vox archive by year
+	 * Alter vox archive by year
+	 *
+	 * @param object $query Wordpress query object.
 	 */
 	public function alter_vox_archive_query( $query ) {
 		if ( ! is_admin() && $query->is_main_query() && $query->is_archive() && isset( $query->query_vars['post_type'] ) && 'vox' === $query->query_vars['post_type'] ) {
@@ -543,6 +572,14 @@ class Vox {
 		}
 	} // end alter_vox_archive_query
 
+	/**
+	 * Clears cache keys on post meta update
+	 *
+	 * @param int    $meta_id     Meta field id.
+	 * @param int    $object_id   Post object id.
+	 * @param string $meta_key    Meta key.
+	 * @param string $_meta_value Meta value.
+	 */
 	public function admin_clear_year_cache_keys( $meta_id, $object_id, $meta_key, $_meta_value ) {
 		if ( self::YEAR_FIELD !== $meta_key ) {
 			return;
@@ -688,6 +725,9 @@ class Vox {
 
 	/**
 	 * Get available months select box - html
+	 *
+	 * @param int $year    Selected year.
+	 * @param int $post_id Current post id.
 	 */
 	private static function get_months_available_select_options( $year, $post_id = false ) {
 		$months = self::get_months_available( $year, $post_id );
@@ -711,7 +751,10 @@ class Vox {
 	} // end get_months_available_select_options
 
 	/**
-	 * get months available in chosen year - array
+	 * Get months available in chosen year - array
+	 *
+	 * @param int $year    Selected year.
+	 * @param int $post_id Current post id.
 	 */
 	private static function get_months_available( $year, $post_id = false ) {
 		$args = array(
@@ -748,6 +791,9 @@ class Vox {
 
 	/**
 	 * Get previous voxs link - html
+	 *
+	 * @param string $label Link label attribute.
+	 * @param string $class Link class attribute.
 	 */
 	public static function get_previous_voxs_link( $label = null, $class = null ) {
 		global $wp_query;
@@ -774,6 +820,9 @@ class Vox {
 
 	/**
 	 * Echo previous voxs link - html
+	 *
+	 * @param string $label Link label attribute.
+	 * @param string $class Link class attribute.
 	 */
 	public static function previous_voxs_link( $label = null, $class = null ) {
 		echo wp_kses( self::get_previous_voxs_link( $label, $class ), array( 'a' => array( 'href' => array(), 'class' => array() ) ) );
@@ -781,6 +830,9 @@ class Vox {
 
 	/**
 	 * Get next voxs link - html
+	 *
+	 * @param string $label Link label attribute.
+	 * @param string $class Link class attribute.
 	 */
 	public static function get_next_voxs_link( $label = null, $class = null ) {
 		global $wp_query;
@@ -809,6 +861,9 @@ class Vox {
 
 	/**
 	 * Echo next voxs link - html
+	 *
+	 * @param string $label Link label attribute.
+	 * @param string $class Link class attribute.
 	 */
 	public static function next_voxs_link( $label = null, $class = null ) {
 		echo wp_kses( self::get_next_voxs_link( $label, $class ), array( 'a' => array( 'href' => array(), 'class' => array() ) ) );
@@ -816,6 +871,9 @@ class Vox {
 
 	/**
 	 * Get voxs archive page link corresponding to specific year - html
+	 *
+	 * @param int     $yearnum Requested year.
+	 * @param boolean $escape  Whether or not to escape returned html.
 	 */
 	public static function get_yearnum_link( $yearnum = 1, $escape = true ) {
 		global $wp_rewrite;
@@ -880,6 +938,12 @@ $vox = new Vox();
 
 if ( ! function_exists( 'vox_pagination' ) ) {
 
+	/**
+	 * Print vox pagination html
+	 *
+	 * @param string $before Html to put before returned html.
+	 * @param string $after  Html to put after returned html.
+	 */
 	function vox_pagination( $before = '', $after = '' ) {
 		global $wp_query;
 
@@ -956,6 +1020,9 @@ if ( ! function_exists( 'vox_pagination' ) ) {
 
 if ( ! function_exists( 'vox_is_paged' ) ) {
 
+	/**
+	 * Conditional tag to know if we're on a vox archive page higher than first
+	 */
 	function vox_is_paged() {
 		global $wp_query;
 

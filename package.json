@@ -5,9 +5,10 @@
   "scripts": {
     "postinstall": "npm run composer -- create-project wp-coding-standards/wpcs:dev-master --no-dev --keep-vcs",
     "test": "npm run lint:php && npm run lint:js",
-    "lint:php": "gulp phpcs",
-    "lint:js": "gulp eslint",
-    "composer": "php ./node_modules/getcomposer/composer.phar"
+    "lint:php": "npm run phpcs -- --extensions=php",
+    "lint:js": "eslint .",
+    "composer": "php ./node_modules/getcomposer/composer.phar",
+    "phpcs": "./wpcs/vendor/bin/phpcs"
   },
   "repository": {
     "type": "git",
@@ -27,9 +28,6 @@
     "eslint": "^3.2.2",
     "eslint-plugin-wordpress": "git+https://github.com/ntwb/eslint-plugin-wordpress.git",
     "getcomposer": "^1.3.2",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-phpcs": "^1.1.1",
     "pre-commit": "^1.1.3"
   },
   "pre-commit": [
