@@ -108,6 +108,8 @@ class Vox {
 		add_action( 'pre_get_posts', array( $this, 'alter_vox_archive_query' ) );
 
 		add_action( 'updated_post_meta', array( $this, 'admin_clear_year_cache_keys' ), 10, 4 );
+
+		add_action( 'admin_init', array( $this, 'handle_github_update' ) );
 	} // end constructor
 
 	/**
@@ -932,6 +934,14 @@ class Vox {
 			return esc_url_raw( $result );
 		}
 	} // end get_yearnum_link
+
+	/**
+	 * Handles github plugin update by using Github updater class
+	 */
+	function handle_github_update() {
+		require_once( 'github-updater/github-updater.class.php' );
+		new GitHubUpdater( __FILE__, 'medfreeman', 'wp-voxusini' );
+	}
 } // end class
 
 $vox = new Vox();
