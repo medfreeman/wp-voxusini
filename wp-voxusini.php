@@ -936,11 +936,13 @@ class Vox {
 	} // end get_yearnum_link
 
 	/**
-	 * Handles github plugin update by using Github updater class
+	 * Handles github plugin update by using
+	 * github updater class from wp-github-updater plugin.
 	 */
 	function handle_github_update() {
-		require_once( 'github-updater/github-updater.class.php' );
-		new GitHubUpdater( __FILE__, 'medfreeman', 'wp-voxusini' );
+		if ( class_exists( 'GitHubUpdater' ) ) {
+			new GitHubUpdater( 'plugin', __FILE__ );
+		}
 	}
 } // end class
 
