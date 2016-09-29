@@ -37,10 +37,9 @@ class Vox {
 
 	const POST_TYPE = 'vox';
 	const LANG_PREFIX = 'vox';
-	const FIELDS_PREFIX = 'vox_';
-	const YEAR_FIELD = self::FIELDS_PREFIX . 'year';
-	const MONTH_FIELD = self::FIELDS_PREFIX . 'month';
-	const PDF_FIELD = self::FIELDS_PREFIX . 'pdf';
+	const YEAR_FIELD = 'vox_year';
+	const MONTH_FIELD = 'vox_month';
+	const PDF_FIELD = 'vox_pdf';
 	const ADMIN_YEAR_FILTER = 'filter_year';
 	const AJAX_ACTION = 'get_vox_months_selectbox';
 	const AJAX_NONCE = 'vox-ajax-nonce';
@@ -202,9 +201,9 @@ class Vox {
 		define( 'EP_VOX', 8388608 );
 
 		register_post_type( self::POST_TYPE, array(
-			'label' => __( 'Vox', self::LANG_PREFIX ),
-			'singular_label' => __( 'Vox', self::LANG_PREFIX ),
-			'labels' => array( 'add_new_item' => __( 'Ajouter un Vox', self::LANG_PREFIX ) ),
+			'label' => __( 'Vox', 'vox' ),
+			'singular_label' => __( 'Vox', 'vox' ),
+			'labels' => array( 'add_new_item' => __( 'Ajouter un Vox', 'vox' ) ),
 			'public' => true,
 			'show_ui' => true,
 			'menu_position' => 26,
@@ -216,7 +215,7 @@ class Vox {
 			'rewrite' => array( 'slug' => self::POST_TYPE, 'with_front' => false, 'ep_mask' => EP_VOX ),
 			'has_archive' => self::POST_TYPE,
 			'labels' => array(
-				'archives' => __( 'les voxs', self::LANG_PREFIX ),
+				'archives' => __( 'les voxs', 'vox' ),
 			),
 		));
 		// Then you can endpoint rewrite rules to this endpoint mask.
@@ -234,7 +233,7 @@ class Vox {
 	public function register_meta_boxes( $meta_boxes ) {
 
 		$meta_boxes[] = array(
-			'title' => esc_html__( 'Date du vox', self::LANG_PREFIX ),
+			'title' => esc_html__( 'Date du vox', 'vox' ),
 			'post_types' => 'vox',
 			'fields' => array(
 				array(
@@ -246,7 +245,7 @@ class Vox {
 					// Select multiple values, optional. Default is false.
 					'multiple'    => false,
 					'std'         => self::get_month_default(),
-					'placeholder' => esc_html__( 'Mois', self::LANG_PREFIX ),
+					'placeholder' => esc_html__( 'Mois', 'vox' ),
 				),
 				array(
 					'name'        => '',
@@ -257,13 +256,13 @@ class Vox {
 					// Select multiple values, optional. Default is false.
 					'multiple'    => false,
 					'std'         => self::get_year_default(),
-					'placeholder' => esc_html__( 'Année', self::LANG_PREFIX ),
+					'placeholder' => esc_html__( 'Année', 'vox' ),
 				),
 			),
 		);
 
 		$meta_boxes[] = array(
-			'title' => esc_html__( 'Joindre un pdf', self::LANG_PREFIX ),
+			'title' => esc_html__( 'Joindre un pdf', 'vox' ),
 			'post_types' => 'vox',
 			'fields' => array(
 				array(
@@ -318,7 +317,7 @@ class Vox {
 	 * @param array $columns Admin vox columns array.
 	 */
 	public function admin_add_featured_image_column( $columns ) {
-		$columns[ self::ADMIN_COLUMN_FEATURED ] = __( 'Image à la une', self::LANG_PREFIX );
+		$columns[ self::ADMIN_COLUMN_FEATURED ] = __( 'Image à la une', 'vox' );
 		return $columns;
 	} // end admin_add_featured_image
 
@@ -340,7 +339,7 @@ class Vox {
 	 * @param array $columns Admin vox columns array.
 	 */
 	public function admin_add_pdf_column( $columns ) {
-		$columns[ self::ADMIN_COLUMN_PDF ] = __( 'Fichier pdf joint', self::LANG_PREFIX );
+		$columns[ self::ADMIN_COLUMN_PDF ] = __( 'Fichier pdf joint', 'vox' );
 		return $columns;
 	} // end admin_add_featured_image
 
@@ -386,13 +385,13 @@ class Vox {
 		if ( 0 === $selected_year ) {
 			$selected = ' selected="selected"';
 		}
-		echo '<option value="' . esc_attr( 0 ) . '"' . esc_html( $selected ) . '>' . esc_html( __( 'Année du vox', self::LANG_PREFIX ) ) .'</option>';
+		echo '<option value="' . esc_attr( 0 ) . '"' . esc_html( $selected ) . '>' . esc_html( __( 'Année du vox', 'vox' ) ) . '</option>';
 		foreach ( $years_array as $year ) {
 			$selected = '';
 			if ( $selected_year === $year ) {
 				$selected = ' selected="selected"';
 			}
-			echo '<option value="' . esc_attr( $year ) . '"' . esc_html( $selected ) . '>' . esc_html( $year ) .'</option>';
+			echo '<option value="' . esc_attr( $year ) . '"' . esc_html( $selected ) . '>' . esc_html( $year ) . '</option>';
 		}
 
 		echo '</select>';
@@ -890,7 +889,7 @@ class Vox {
 		$home_root = ( isset( $home_root['path'] ) ) ? $home_root['path'] : '';
 		$home_root = preg_quote( $home_root, '|' );
 
-		$request = preg_replace( '|^'. $home_root . '|i', '', $request );
+		$request = preg_replace( '|^' . $home_root . '|i', '', $request );
 		$request = preg_replace( '|^/+|', '', $request );
 
 		if ( ! $wp_rewrite->using_permalinks() || is_admin() ) {

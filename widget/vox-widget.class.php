@@ -104,7 +104,7 @@ class Vox_widget extends WP_Widget {
 
 			$title = ucfirst( date_i18n( 'F', mktime( 0, 0, 0, $vox_month, 1, 2013 ) ) ) . ' ' . $vox_year;
 			?>
-				<a class="vox__link" title="<?php esc_attr_e( $title ); ?>" href="<?php esc_attr_e( $pdf_url ); ?>"><img class="vox__icon" src="<?php esc_attr_e( plugins_url( 'widget/images/voxpdf_invert.png' , dirname( __FILE__ ) ) ); ?>" width="150" height="147" /></a>
+				<a class="vox__link" title="<?php echo esc_attr( $title ); ?>" href="<?php echo esc_attr( $pdf_url ); ?>"><img class="vox__icon" src="<?php echo esc_attr( plugins_url( 'widget/images/voxpdf_invert.png' , dirname( __FILE__ ) ) ); ?>" width="150" height="147" /></a>
 			</ul>
 			<?php
 		}
@@ -138,8 +138,8 @@ class Vox_widget extends WP_Widget {
 
 		?>
 		<p>
-			<label for="<?php esc_attr_e( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( __( 'Title:' ) ); ?></label>
-			<input class="widefat" id="<?php esc_attr_e( $this->get_field_id( 'title' ) ); ?>" name="<?php esc_attr_e( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php esc_attr_e( $title ); ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'vox' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 
 		<?php
