@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/medfreeman/wp-voxusini.git"
+    "url": "git+https://github.com/usine/wp-voxusini.git"
   },
   "keywords": [
     "wordpress",
@@ -23,9 +23,9 @@
   "author": "Mehdi Lahlou",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/medfreeman/wp-voxusini/issues"
+    "url": "https://github.com/usine/wp-voxusini/issues"
   },
-  "homepage": "https://github.com/medfreeman/wp-voxusini#readme",
+  "homepage": "https://github.com/usine/wp-voxusini#readme",
   "devDependencies": {
     "eslint": "^3.2.2",
     "eslint-plugin-wordpress": "git+https://github.com/ntwb/eslint-plugin-wordpress.git",
