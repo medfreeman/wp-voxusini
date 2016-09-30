@@ -4,7 +4,7 @@ Plugin Name: Vox Usini
 Plugin URI: https://github.com/usine/wp-voxusini
 GitHub Plugin URI: https://github.com/usine/wp-voxusini
 Description: Provides an interface for maintaining voxusini monthly pdf issue
-Version: 1.1.1
+Version: 1.2.0
 Author: Mehdi Lahlou
 Author URI: https://github.com/medfreeman
 Author Email: mehdi.lahlou@free.fr
