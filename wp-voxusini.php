@@ -2,6 +2,7 @@
 /**
 Plugin Name: Vox Usini
 Plugin URI: https://github.com/usine/wp-voxusini
+GitHub Plugin URI: https://github.com/usine/wp-voxusini
 Description: Provides an interface for maintaining voxusini monthly pdf issue
 Version: 1.1.1
 Author: Mehdi Lahlou
@@ -107,8 +108,6 @@ class Vox {
 		add_action( 'pre_get_posts', array( $this, 'alter_vox_archive_query' ) );
 
 		add_action( 'updated_post_meta', array( $this, 'admin_clear_year_cache_keys' ), 10, 4 );
-
-		add_action( 'admin_init', array( $this, 'handle_github_update' ) );
 	} // end constructor
 
 	/**
@@ -933,16 +932,6 @@ class Vox {
 			return esc_url_raw( $result );
 		}
 	} // end get_yearnum_link
-
-	/**
-	 * Handles github plugin update by using
-	 * github updater class from wp-github-updater plugin.
-	 */
-	function handle_github_update() {
-		if ( class_exists( 'GitHubUpdater' ) ) {
-			new GitHubUpdater( 'plugin', __FILE__ );
-		}
-	}
 } // end class
 
 $vox = new Vox();
