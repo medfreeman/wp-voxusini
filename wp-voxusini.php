@@ -107,7 +107,7 @@ class Vox {
 		add_filter( 'template_redirect', array( $this, 'return_file_http' ) );
 		add_action( 'pre_get_posts', array( $this, 'alter_vox_archive_query' ) );
 
-		add_action( 'updated_post_meta', array( $this, 'admin_clear_year_cache_keys' ), 10, 4 );
+		add_action( 'save_post_vox', array( $this, 'admin_clear_year_cache_keys' ) );
 	} // end constructor
 
 	/**
@@ -580,10 +580,7 @@ class Vox {
 	 * @param string $meta_key    Meta key.
 	 * @param string $_meta_value Meta value.
 	 */
-	public function admin_clear_year_cache_keys( $meta_id, $object_id, $meta_key, $_meta_value ) {
-		if ( self::YEAR_FIELD !== $meta_key ) {
-			return;
-		}
+	public function admin_clear_year_cache_keys( $post_id ) {
 		wp_cache_delete( self::YEAR_LOWEST_CACHE_KEY );
 		wp_cache_delete( self::YEAR_HIGHEST_CACHE_KEY );
 		wp_cache_delete( self::YEARS_ARRAY_CACHE_KEY );
