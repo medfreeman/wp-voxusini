@@ -75,11 +75,11 @@ class Vox_widget extends WP_Widget {
 				'relation' => 'AND',
 				'year_clause' => array(
 					'key' => 'vox_year',
-					'compare' => 'NUMERIC',
+					'type' => 'NUMERIC',
 				),
 				'month_clause' => array(
 					'key' => 'vox_month',
-					'compare' => 'NUMERIC',
+					'type' => 'NUMERIC',
 				),
 			),
 			'orderby' => array(
